@@ -17,6 +17,7 @@ const PMEPage = lazy(() => import('@/pages/PMEPage.jsx'));
 const SportsMedicinePage = lazy(() => import('@/pages/SportsMedicinePage.jsx'));
 const UrgentCarePage = lazy(() => import('@/pages/UrgentCarePage.jsx'));
 const UrologyPage = lazy(() => import('@/pages/UrologyPage.jsx'));
+const AdminDashboard = lazy(() => import('@/admin/Dashboard.jsx'));
 
 // State Pages
 const TexasPage = lazy(() => import('@/pages/TexasPage.jsx'));
@@ -68,6 +69,7 @@ function App() {
       <SEOHead />
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0da1df]"></div></div>}>
       <Routes>
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<ContactPage />} />
         

@@ -4,27 +4,29 @@ import { motion } from 'framer-motion';
 import { Search, Calendar, ArrowRight, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
-
-import { blogPosts } from '../data/blogData.js';
+import { getEditableBlogs } from '@/admin/blogStorage.js';
 
 const POSTS_PER_PAGE = 9;
 
-const categories = ['All', ...new Set(blogPosts.map((p) => p.category))];
+const categories = ['All', ...new Set(getEditableBlogs().map((p) => p.category))];
 
 function BlogPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredPosts = useMemo(() => {
-    return blogPosts.filter((post) => {
-      const matchesSearch =
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchTerm, selectedCategory]);
+const filteredPosts = useMemo(() => {
+  return getEditableBlogs().filter((post) => {
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === 'All' || post.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+}, [searchTerm, selectedCategory]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
 

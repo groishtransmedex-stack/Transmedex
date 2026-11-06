@@ -4,24 +4,38 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Share2, Bookmark, Twitter, Linkedin, Facebook } from 'lucide-react';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
-import { blogPosts } from '@/data/blogData.js';
+import { getEditableBlogs } from '@/admin/blogStorage.js';
+
 
 function BlogTemplate() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const post = useMemo(() => {
-    return blogPosts.find((p) => p.slug === slug);
-  }, [slug]);
+  // const post = useMemo(() => {
+  //   return blogPosts.find((p) => p.slug === slug);
+  // }, [slug]);
 
-  const relatedPosts = useMemo(() => {
-    if (!post) return [];
-    return blogPosts
-      .filter((p) => p.category === post.category && p.id !== post.id)
-      .slice(0, 3);
-  }, [post]);
+const post = useMemo(() => {
+  return getEditableBlogs().find((p) => p.slug === slug);
+}, [slug]);
+
+  // const relatedPosts = useMemo(() => {
+  //   if (!post) return [];
+  //   return blogPosts
+  //     .filter((p) => p.category === post.category && p.id !== post.id)
+  //     .slice(0, 3);
+  // }, [post]);
 
   // Scroll to top on mount or when slug changes
+  
+  const relatedPosts = useMemo(() => {
+  if (!post) return [];
+
+  return getEditableBlogs()
+    .filter((p) => p.category === post.category && p.id !== post.id)
+    .slice(0, 3);
+}, [post]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
@@ -134,36 +148,28 @@ function BlogTemplate() {
           <div className="flex flex-col lg:flex-row gap-12">
             
             {/* Main Content */}
-            <article className="flex-1 max-w-3xl prose prose-lg prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-[#0da1df] hover:prose-a:text-sky-500 prose-img:rounded-xl">
-              <p className="lead text-2xl text-slate-600 font-light leading-relaxed mb-10">
-                Medical billing is a constantly evolving landscape. With new CPT codes, changing regulations, and payer-specific guidelines, staying ahead requires continuous education and strategic planning.
-              </p>
-
-              <h2>Understanding the Basics</h2>
-              <p>
-                To navigate the complexities of modern healthcare revenue cycles, one must first establish a rock-solid foundation. This involves understanding the nuanced relationship between clinical documentation and code selection. Providers often document to support clinical care, but without translating that specificity into codable language, significant revenue can be left on the table.
-              </p>
-              
-              <div className="my-12 p-8 rounded-2xl bg-slate-50 border border-slate-100 border-l-4" style={{ borderLeftColor: post.color }}>
-                <p className="text-xl italic text-slate-700 m-0 font-medium">
-                  "The difference between a successful practice and a struggling one often comes down to their denial management strategy. It's not just about submitting claims; it's about submitting clean claims."
-                </p>
-              </div>
-
-              <h2>Key Strategies for 2026</h2>
-              <p>
-                As we look ahead, automation and AI are becoming integral to the billing workflow. However, technology alone isn't a silver bullet. It requires human oversight to ensure compliance.
-              </p>
-              <ul>
-                <li><strong>Proactive Denial Management:</strong> Shift from a reactive approach to predicting denials before they happen.</li>
-                <li><strong>Comprehensive Staff Training:</strong> Ensure your team is updated on the latest coding changes (like the 2026 E/M guidelines).</li>
-                <li><strong>Patient Financial Engagement:</strong> Clear communication regarding patient responsibility upfront drastically reduces bad debt.</li>
-              </ul>
-
-              <h2>The Road Ahead</h2>
-              <p>
-                In conclusion, optimizing your revenue cycle is an ongoing journey. By implementing robust processes, leveraging the right technology, and partnering with experts when necessary, your practice can focus on what it does best: delivering exceptional patient care.
-              </p>
+            <article className="flex-1 max-w-3xl">
+              <style>{`
+                .blog-content p { margin-bottom: 1.25rem; color: #475569; line-height: 1.8; font-size: 1.0625rem; }
+                .blog-content p.lead { font-size: 1.25rem; color: #334155; font-weight: 300; line-height: 1.75; margin-bottom: 2.5rem; }
+                .blog-content h2 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f1f5f9; }
+                .blog-content h3 { font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-top: 1.75rem; margin-bottom: 0.6rem; }
+                .blog-content ul, .blog-content ol { padding-left: 1.5rem; margin-bottom: 1.25rem; color: #475569; }
+                .blog-content ul { list-style-type: disc; }
+                .blog-content ol { list-style-type: decimal; }
+                .blog-content li { margin-bottom: 0.5rem; line-height: 1.75; }
+                .blog-content strong { color: #1e293b; font-weight: 700; }
+                .blog-content a { color: #0da1df; text-decoration: underline; }
+                .blog-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9375rem; }
+                .blog-content th { background: #f8fafc; color: #0f172a; font-weight: 700; padding: 0.75rem 1rem; text-align: left; border-bottom: 2px solid #e2e8f0; }
+                .blog-content td { padding: 0.65rem 1rem; border-bottom: 1px solid #e2e8f0; color: #475569; }
+                .blog-content tr:last-child td { border-bottom: none; }
+                .blog-content .callout { background: #f8fafc; border-left: 4px solid ${post.color}; border-radius: 0.75rem; padding: 1.5rem 2rem; margin: 2rem 0; font-size: 1.1rem; font-style: italic; color: #334155; font-weight: 500; line-height: 1.7; }
+              `}</style>
+              <div
+                className="blog-content"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
             </article>
 
             {/* Sidebar (Share & Sticky Meta) */}
